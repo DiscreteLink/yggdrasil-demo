@@ -1,0 +1,707 @@
+{
+  "topics": [
+    {
+      "id": "a_01",
+      "topic": "育儿补贴制度实施",
+      "file": "a_01/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_02",
+      "topic": "堪察加海域特大地震",
+      "file": "a_02/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_03",
+      "topic": "汪苏泷与张碧晨《年轮》原唱之争",
+      "file": "a_03/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_04",
+      "topic": "2025年男篮亚洲杯",
+      "file": "a_04/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_05",
+      "topic": "泰柬边境冲突",
+      "file": "a_05/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_06",
+      "topic": "A股创十年新高",
+      "file": "a_06/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_07",
+      "topic": "黄仁勋访华",
+      "file": "a_07/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_08",
+      "topic": "人工智能生成合成内容标识方法发布",
+      "file": "a_08/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_09",
+      "topic": "个人消费贷款贴息政策实施",
+      "file": "a_09/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_10",
+      "topic": "泰国第32任总理选举",
+      "file": "a_10/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_11",
+      "topic": "景德镇“鸡排哥”李俊永走红",
+      "file": "a_11/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_12",
+      "topic": "杨振宁逝世",
+      "file": "a_12/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_13",
+      "topic": "广西防城港“亮证”事件",
+      "file": "a_13/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_14",
+      "topic": "成都天府大道小米SU7交通事故",
+      "file": "a_14/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_15",
+      "topic": "董某莹事件调查及处理结果",
+      "file": "a_15/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_16",
+      "topic": "高市早苗当选日本首相",
+      "file": "a_16/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_17",
+      "topic": "2025年亚洲乒乓球团体锦标赛",
+      "file": "a_17/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_18",
+      "topic": "郑智化控诉深圳机场服务",
+      "file": "a_18/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_19",
+      "topic": "辽宁朝阳4岁女童丁一走失",
+      "file": "a_19/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_20",
+      "topic": "香港红磡富恒工业大厦黄金劫案",
+      "file": "a_20/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_21",
+      "topic": "绍兴鲁迅故里景墙“夹烟”形象争议",
+      "file": "a_21/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_22",
+      "topic": "小米17系列发布",
+      "file": "a_22/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_23",
+      "topic": "第38届中国电影金鸡奖",
+      "file": "a_23/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_24",
+      "topic": "福建舰实现电磁弹射起飞",
+      "file": "a_24/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_25",
+      "topic": "2025年诺贝尔奖",
+      "file": "a_25/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_26",
+      "topic": "美国联邦政府停摆",
+      "file": "a_26/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_27",
+      "topic": "第80届联合国大会",
+      "file": "a_27/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_28",
+      "topic": "VOGUE二十周年封面",
+      "file": "a_28/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_29",
+      "topic": "纪念抗战胜利与台湾光复80周年",
+      "file": "a_29/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_30",
+      "topic": "第九届平遥国际电影展",
+      "file": "a_30/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_31",
+      "topic": "美国明尼苏达州明尼阿波利斯天主教学校枪击案",
+      "file": "a_31/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_32",
+      "topic": "新凯来亮相2025湾芯展",
+      "file": "a_32/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_33",
+      "topic": "星舰第十次试飞",
+      "file": "a_33/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_34",
+      "topic": "第22届中国—东盟博览会",
+      "file": "a_34/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_35",
+      "topic": "特朗普访英",
+      "file": "a_35/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_36",
+      "topic": "2025年中国网球公开赛",
+      "file": "a_36/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_37",
+      "topic": "海南自由贸易港全岛封关",
+      "file": "a_37/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_38",
+      "topic": "日本首相高市早苗妄议台海引发争议",
+      "file": "a_38/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_39",
+      "topic": "日本在与那国岛部署导弹",
+      "file": "a_39/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_40",
+      "topic": "2026国家公务员考试",
+      "file": "a_40/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_41",
+      "topic": "辽宁舰航母编队远海训练",
+      "file": "a_41/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_42",
+      "topic": "12月广东汕头火灾事故",
+      "file": "a_42/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_43",
+      "topic": "网络名人账号违规整治行动",
+      "file": "a_43/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_44",
+      "topic": "南京大屠杀死难者国家公祭日",
+      "file": "a_44/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_45",
+      "topic": "中央政治局会议及中央经济工作会议",
+      "file": "a_45/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_46",
+      "topic": "电动自行车新国标实施",
+      "file": "a_46/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_47",
+      "topic": "怀化警方解救被拐婴儿",
+      "file": "a_47/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_48",
+      "topic": "苏炳添退役",
+      "file": "a_48/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_49",
+      "topic": "陈震偷税被查",
+      "file": "a_49/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_50",
+      "topic": "范曾宣布与女儿继子断绝关系",
+      "file": "a_50/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_51",
+      "topic": "网红罗大美（尚某锋）遇害案",
+      "file": "a_51/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_52",
+      "topic": "电视剧《枭起青壤》播映",
+      "file": "a_52/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_53",
+      "topic": "蓝战非南非绑架案",
+      "file": "a_53/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_54",
+      "topic": "中国含汞体温计禁产令",
+      "file": "a_54/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_55",
+      "topic": "美国海军“尼米兹”号航母南海坠机",
+      "file": "a_55/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_56",
+      "topic": "印度“光辉”战机迪拜航展坠毁",
+      "file": "a_56/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_57",
+      "topic": "张水华违规兼职及调休被处分",
+      "file": "a_57/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_58",
+      "topic": "福建舰入列",
+      "file": "a_58/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_59",
+      "topic": "“十五五”规划",
+      "file": "a_59/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_60",
+      "topic": "白天辉受贿案死刑执行",
+      "file": "a_60/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_61",
+      "topic": "香港大埔宏福苑五级火灾",
+      "file": "a_61/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_62",
+      "topic": "昆明洛羊镇火车站“11·27”铁路交通重大事故",
+      "file": "a_62/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_63",
+      "topic": "何晴逝世",
+      "file": "a_63/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_64",
+      "topic": "美国“斩杀线”社会现象与网络热议",
+      "file": "a_64/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_65",
+      "topic": "南京大屠杀纪念活动",
+      "file": "a_65/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_66",
+      "topic": "2025年KPL年度总决赛",
+      "file": "a_66/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_67",
+      "topic": "台北连环纵火持刀袭击事件",
+      "file": "a_67/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_68",
+      "topic": "12月寒潮影响",
+      "file": "a_68/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_69",
+      "topic": "华为Mate 80系列及全场景新品发布",
+      "file": "a_69/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_70",
+      "topic": "最高法发布反家暴力典型案例",
+      "file": "a_70/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_71",
+      "topic": "2025 WTT 香港总决赛",
+      "file": "a_71/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_72",
+      "topic": "2025年国际乒联混合团体世界杯",
+      "file": "a_72/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_73",
+      "topic": "宁波5月龄女婴心脏手术后死亡",
+      "file": "a_73/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_74",
+      "topic": "神舟二十二号应急发射",
+      "file": "a_74/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_75",
+      "topic": "2025年悉尼邦迪海滩枪击事件",
+      "file": "a_75/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_76",
+      "topic": "2025广州车展",
+      "file": "a_76/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_77",
+      "topic": "治安违法记录封存制度",
+      "file": "a_77/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_78",
+      "topic": "北京朝阳小区宠物投毒案",
+      "file": "a_78/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_79",
+      "topic": "河南中牟特大生产销售假奶粉案",
+      "file": "a_79/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_80",
+      "topic": "2025年流感高发季",
+      "file": "a_80/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_81",
+      "topic": "全国纪检监察机关反腐工作",
+      "file": "a_81/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_82",
+      "topic": "初中生钟某某故意杀人案",
+      "file": "a_82/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_83",
+      "topic": "日本青森近海强震",
+      "file": "a_83/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_84",
+      "topic": "“正义使命-2025”演习",
+      "file": "a_84/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_85",
+      "topic": "网络热梗“爱你老己”爆火",
+      "file": "a_85/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_86",
+      "topic": "快手遭遇大规模黑灰产攻击",
+      "file": "a_86/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_87",
+      "topic": "6名大学生坠落事故调查结果公布",
+      "file": "a_87/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_88",
+      "topic": "南京博物院捐赠文物失踪引发争议",
+      "file": "a_88/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_89",
+      "topic": "央行发布一次性信用修复政策",
+      "file": "a_89/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "a_90",
+      "topic": "苹果iPhone17系列发布",
+      "file": "a_90/new_event.json",
+      "hasGame": false,
+      "hasCover": true
+    },
+    {
+      "id": "test_01",
+      "topic": "贵州离婚冷静期毒杀儿女案",
+      "file": "test_01/new_event.json",
+      "hasGame": true,
+      "hasCover": true
+    },
+    {
+      "id": "test_02",
+      "topic": "释永信被调查",
+      "file": "test_02/new_event.json",
+      "hasGame": true,
+      "hasCover": true
+    },
+    {
+      "id": "test_03",
+      "topic": "西贝与罗永浩“预制菜”之争",
+      "file": "test_03/new_event.json",
+      "hasGame": true,
+      "hasCover": true
+    },
+    {
+      "id": "test_04",
+      "topic": "查理·柯克在大学演讲时遭遇刺身亡",
+      "file": "test_04/new_event.json",
+      "hasGame": true,
+      "hasCover": true
+    },
+    {
+      "id": "test_05",
+      "topic": "九三阅兵",
+      "file": "test_05/new_event.json",
+      "hasGame": true,
+      "hasCover": true
+    },
+    {
+      "id": "test_06",
+      "topic": "蔡国强喜马拉雅烟花秀争议",
+      "file": "test_06/new_event.json",
+      "hasGame": true,
+      "hasCover": true
+    },
+    {
+      "id": "test_07",
+      "topic": "武大图书馆事件调查与处置",
+      "file": "test_07/new_event.json",
+      "hasGame": true,
+      "hasCover": true
+    },
+    {
+      "id": "test_08",
+      "topic": "超强台风“桦加沙”来袭",
+      "file": "test_08/new_event.json",
+      "hasGame": true,
+      "hasCover": true
+    },
+    {
+      "id": "test_09",
+      "topic": "2025中美贸易摩擦演变",
+      "file": "test_09/new_event.json",
+      "hasGame": true,
+      "hasCover": true
+    },
+    {
+      "id": "test_10",
+      "topic": "高德扫街榜发布与运营",
+      "file": "test_10/new_event.json",
+      "hasGame": true,
+      "hasCover": true
+    }
+  ],
+  "total": 100,
+  "with_game": 10,
+  "with_cover": 100
+}

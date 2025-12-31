@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yggdrasil - A Benchmark for Multi-granular Event Understanding</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(255,255,255,0.03);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --accent: #60a5fa;
+            --accent-purple: #a78bfa;
+            --accent-green: #4ade80;
+            --accent-orange: #fb923c;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        #app {
+            min-height: 100vh;
+        }
+
+        /* ============== Navigation ============== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a[title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            top: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(102, 126, 234, 0.95);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: fadeInDown 0.3s ease;
+            z-index: 1000;
+        }
+
+        .nav-links a[title]:hover::before {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: rgba(102, 126, 234, 0.95);
+            z-index: 1000;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* ============== Hero Section ============== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 6rem 4rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(167, 139, 250, 0.1) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 3rem;
+            align-items: center;
+            z-index: 1;
+            position: relative;
+            width: 100%;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text h1 span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 100%;
+            line-height: 1.6;
+        }
+
+        .hero-opensource {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(167, 139, 250, 0.12) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .hero-opensource:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.18) 0%, rgba(167, 139, 250, 0.18) 100%);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+        }
+
+        .opensource-icon {
+            font-size: 1.25rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .opensource-text {
+            line-height: 1.5;
+        }
+
+        .opensource-text strong {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(102, 126, 234, 0.95);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .btn-secondary:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: rgba(102, 126, 234, 0.95);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .hero-image {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* ============== Section Common ============== */
+        section {
+            padding: 6rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* ============== Tasks Section ============== */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .task-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .task-card:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-4px);
+        }
+
+        .task-card:hover::before {
+            opacity: 1;
+        }
+
+        .task-card:nth-child(1) { --card-color: #60a5fa; }
+        .task-card:nth-child(2) { --card-color: #a78bfa; }
+        .task-card:nth-child(3) { --card-color: #4ade80; }
+        .task-card:nth-child(4) { --card-color: #fb923c; }
+
+        .task-card:nth-child(1)::before { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+        .task-card:nth-child(2)::before { background: linear-gradient(90deg, #a78bfa, #8b5cf6); }
+        .task-card:nth-child(3)::before { background: linear-gradient(90deg, #4ade80, #22c55e); }
+        .task-card:nth-child(4)::before { background: linear-gradient(90deg, #fb923c, #f97316); }
+
+        .task-number {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--card-color);
+            background: rgba(255,255,255,0.05);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .task-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .task-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ============== Dataset Construction Section ============== */
+        #dataset-construction {
+            padding: 6rem 2rem;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);
+        }
+
+        .dataset-content {
+            max-width: 1400px;
+            margin: 3rem auto 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .dataset-text {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .dataset-paragraph {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .dataset-paragraph strong {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .dataset-paragraph code {
+            background: rgba(96, 165, 250, 0.1);
+            color: #60a5fa;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .dataset-image {
+            position: sticky;
+            top: 2rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .dataset-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+        }
+
+        .image-caption {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* ============== Sidebar Navigation ============== */
+        .sidebar-nav {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 280px;
+            background: rgba(18, 18, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(102, 126, 234, 0.2);
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+        }
+
+        .sidebar-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .sidebar-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(102, 126, 234, 0.5) transparent;
+        }
+
+        .sidebar-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-list::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 3px;
+        }
+
+        .sidebar-item {
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(102, 126, 234, 0.15);
+            border-left-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .sidebar-item.important {
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .sidebar-item-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-item-text {
+            flex: 1;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            color: var(--text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .sidebar-item.important .sidebar-item-text {
+            font-weight: 600;
+        }
+
+        .sidebar-toggle {
+            position: fixed;
+            left: 20px;
+            top: 100px;
+            z-index: 901;
+            background: rgba(102, 126, 234, 0.9);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+        }
+
+        .sidebar-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-nav {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar-nav.show {
+                transform: translateX(0);
+            }
+            
+            .sidebar-toggle {
+                display: flex;
+            }
+        }
+
+        /* ============== Demo Section ============== */
+        .demo-section {
+            background: radial-gradient(ellipse at bottom, #090a0f 0%, #000000 100%);
+            border-radius: 30px;
+            padding: 0;
+            padding-left: 280px;
+            margin: 2rem 4rem;
+            max-width: none;
+            position: relative;
+            overflow: hidden;
+            height: 800px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            transition: padding-left 0.3s;
+        }
+
+        @media (max-width: 1024px) {
+            .demo-section {
+                padding-left: 0;
+            }
+            
+            .demo-header {
+                left: 3rem;
+            }
+        }
+
+        .demo-header {
+            position: absolute;
+            top: 3rem;
+            left: 320px;
+            z-index: 1000;
+            pointer-events: none;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        .demo-title-area h2 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .demo-title-area p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.2rem;
+        }
+
+        /* Universe Wrapper - Fixed container for drag events */
+        #universe-wrapper {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        #universe-wrapper.grabbing {
+            cursor: grabbing;
+        }
+
+        /* Universe Container */
+        #universe-container {
+            width: 200%;
+            height: 200%;
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            background: 
+                radial-gradient(1px 1px at 10% 10%, white, transparent),
+                radial-gradient(1px 1px at 20% 20%, white, transparent),
+                radial-gradient(2px 2px at 30% 30%, white, transparent),
+                radial-gradient(2px 2px at 40% 40%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 60% 60%, white, transparent),
+                radial-gradient(2px 2px at 70% 70%, white, transparent),
+                radial-gradient(1px 1px at 80% 80%, white, transparent),
+                radial-gradient(1px 1px at 90% 90%, white, transparent);
+            background-size: 550px 550px;
+            /* animation: universePan 120s linear infinite; Removed for JS control */
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        /* Planets */
+        .planet-topic {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.5), 0 0 15px rgba(255,255,255,0.1);
+        }
+
+        .planet-topic::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140%;
+            height: 140%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1);
+            opacity: 0;
+            transition: all 0.5s;
+            pointer-events: none;
+        }
+
+        .planet-topic:hover {
+            transform: scale(1.2);
+            z-index: 100;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3), 0 0 30px var(--planet-color);
+        }
+
+        .planet-topic:hover::after {
+            opacity: 1;
+            width: 160%;
+            height: 160%;
+            border-color: var(--planet-color);
+        }
+
+        .planet-content {
+            position: absolute;
+            width: 300px; /* Increased width */
+            text-align: left;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s;
+            transform: translateY(40px) scale(0.9);
+            background: rgba(15, 23, 42, 0.95);
+            padding: 0;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .planet-image {
+            width: 100%;
+            height: 120px;
+            background-color: #334155;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .planet-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(15, 23, 42, 1), transparent);
+        }
+
+        .planet-info {
+            padding: 1rem;
+        }
+
+        .planet-topic:hover .planet-content {
+            opacity: 1;
+            transform: translate(-50%, 10px) scale(1);
+            border-color: var(--planet-color);
+            z-index: 101;
+        }
+
+        /* Planet Scaler - keeps card size constant regardless of zoom */
+        .planet-scaler {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            z-index: 200;
+            pointer-events: none;
+        }
+
+        .planet-scaler .planet-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, 10px) scale(0.9);
+            pointer-events: auto;
+        }
+
+        .planet-topic:hover .planet-scaler .planet-content {
+            transform: translate(-50%, 10px) scale(1);
+        }
+
+        /* Test Planet (hasGame) - Special highlight */
+        .planet-topic.planet-test {
+            box-shadow: 
+                inset -10px -10px 20px rgba(0,0,0,0.5), 
+                0 0 30px rgba(251, 191, 36, 0.6),
+                0 0 60px rgba(251, 191, 36, 0.3);
+            animation: testPlanetPulse 2s ease-in-out infinite;
+        }
+
+        .planet-topic.planet-test::before {
+            content: '🎮';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 1.2rem;
+            z-index: 50;
+        }
+
+        @keyframes testPlanetPulse {
+            0%, 100% { box-shadow: inset -10px -10px 20px rgba(0,0,0,0.5), 0 0 30px rgba(251, 191, 36, 0.6), 0 0 60px rgba(251, 191, 36, 0.3); }
+            50% { box-shadow: inset -10px -10px 20px rgba(0,0,0,0.5), 0 0 50px rgba(251, 191, 36, 0.8), 0 0 100px rgba(251, 191, 36, 0.5); }
+        }
+
+        /* ============== Zoom Controls ============== */
+        .zoom-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: rgba(20, 20, 30, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .zoom-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(96, 165, 250, 0.3);
+            transform: scale(1.05);
+        }
+
+        .zoom-btn:active {
+            transform: scale(0.95);
+        }
+
+        .zoom-level {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 4px 0;
+            min-width: 44px;
+            text-align: center;
+        }
+
+        .planet-title {
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .planet-claims {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 150px; /* Limit height */
+            overflow: hidden; /* Disable manual scroll, use JS auto-scroll */
+            position: relative;
+        }
+
+        .planet-claims li {
+            margin-bottom: 6px;
+            padding-left: 12px;
+            position: relative;
+            line-height: 1.4;
+            /* Removed line-clamp to allow full text reading in scroll */
+        }
+        
+        .planet-claims li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--planet-color);
+        }
+        
+        /* Show title for larger planets by default (simplified) */
+        .planet-topic.large .planet-content {
+            /* We now use a consistent hover effect for all, but large ones might have more info preloaded */
+        }
+
+        /* Planet Types */
+        .planet-type-1 { background: radial-gradient(circle at 30% 30%, #60a5fa, #1e3a8a); --planet-color: #60a5fa; }
+        .planet-type-2 { background: radial-gradient(circle at 30% 30%, #f472b6, #831843); --planet-color: #f472b6; }
+        .planet-type-3 { background: radial-gradient(circle at 30% 30%, #fb923c, #7c2d12); --planet-color: #fb923c; }
+        .planet-type-4 { background: radial-gradient(circle at 30% 30%, #a78bfa, #4c1d95); --planet-color: #a78bfa; }
+        .planet-type-5 { background: radial-gradient(circle at 30% 30%, #4ade80, #14532d); --planet-color: #4ade80; }
+        .planet-type-6 { background: radial-gradient(circle at 30% 30%, #e2e8f0, #475569); --planet-color: #e2e8f0; } /* Moon-like */
+
+        /* Background Stars (Static) */
+        .bg-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* ============== Timeline Fullscreen ============== */
+        .timeline-fullscreen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .timeline-bg-blur {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: blur(40px) brightness(0.2);
+            transform: scale(1.2);
+            z-index: 0;
+        }
+
+        .timeline-header {
+            position: relative;
+            z-index: 10;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(10,10,15,0.9), transparent);
+        }
+
+        .timeline-title-area h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-title-area p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .timeline-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Timeline Scroll Area - FIXED */
+        .timeline-scroll {
+            flex: 1;
+            overflow-x: auto;
+            overflow-y: hidden;
+            position: relative;
+            z-index: 5;
+            padding: 2rem 0;
+        }
+
+        .timeline-track {
+            display: inline-flex;
+            align-items: center;
+            gap: 3rem;
+            padding: 0 4rem;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .timeline-track::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 5%, rgba(255,255,255,0.1) 95%, transparent);
+            z-index: 0;
+        }
+
+        .timeline-node {
+            position: relative;
+            width: 280px;
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 1.5rem;
+            z-index: 1;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .timeline-node:nth-child(odd) {
+            transform: translateY(-80px);
+        }
+
+        .timeline-node:nth-child(even) {
+            transform: translateY(80px);
+        }
+
+        .timeline-node::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 2px;
+            background: var(--accent);
+            opacity: 0.4;
+        }
+
+        .timeline-node:nth-child(odd)::before {
+            top: 100%;
+            height: 60px;
+        }
+
+        .timeline-node:nth-child(even)::before {
+            bottom: 100%;
+            height: 60px;
+        }
+
+        .timeline-node::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .timeline-node:nth-child(odd)::after {
+            top: calc(100% + 55px);
+        }
+
+        .timeline-node:nth-child(even)::after {
+            bottom: calc(100% + 55px);
+        }
+
+        .timeline-node:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: var(--accent);
+            transform: translateY(-80px) scale(1.02);
+            z-index: 10;
+        }
+
+        .timeline-node:nth-child(even):hover {
+            transform: translateY(80px) scale(1.02);
+        }
+
+        .node-date {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .node-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .node-summary {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .timeline-node:hover .node-summary {
+            -webkit-line-clamp: unset;
+            max-height: 300px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(102, 126, 234, 0.5) transparent;
+            padding-right: 8px;
+        }
+
+        .node-claims {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .timeline-node:hover .node-claims {
+            max-height: 250px;
+            opacity: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(102, 126, 234, 0.5) transparent;
+        }
+
+        .node-claim {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            background: rgba(0,0,0,0.2);
+            padding: 0.5rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            border-left: 2px solid var(--accent);
+        }
+
+        /* ============== Game Overlay ============== */
+        .game-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.98);
+            backdrop-filter: blur(30px);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .game-header {
+            text-align: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .game-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-header p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .game-info-box {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: left;
+        }
+
+        .game-info-box h4 {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .game-info-box p {
+            font-size: 0.9rem;
+            color: #d1d5db;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            align-content: flex-start;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .game-card {
+            width: 260px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 1.25rem;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .game-card:active {
+            cursor: grabbing;
+            transform: scale(1.03);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+
+        .game-card.correct {
+            border-color: var(--accent-green);
+            background: rgba(74, 222, 128, 0.1);
+        }
+
+        .game-card.wrong {
+            border-color: #f87171;
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .game-card-number {
+            display: inline-block;
+            background: var(--gradient-1);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-card-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .game-card-summary {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Result Modal */
+        .result-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-secondary);
+            padding: 3rem;
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+            z-index: 3100;
+        }
+
+        .result-modal h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 1rem 0;
+        }
+
+        .result-modal p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Transitions */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.4s ease;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+                margin: 0 auto 2rem;
+                max-width: 600px;
+            }
+            .hero-opensource {
+                margin: 0 auto 2rem;
+                max-width: 90%;
+                font-size: 0.85rem;
+                padding: 0.75rem 1.25rem;
+            }
+            .opensource-icon {
+                font-size: 1.1rem;
+            }
+            .hero-image {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            .galaxy-grid {
+                flex-wrap: wrap;
+                justify-content: center;
+                animation: none; /* 移动端禁用自动滚动 */
+            }
+            .galaxy-container {
+                overflow: visible;
+                height: auto;
+                padding: 2rem;
+            }
+            .event-bubble {
+                width: 320px;
+                height: 320px;
+            }
+            .tasks-grid {
+                grid-template-columns: 1fr;
+            }
+            .dataset-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .dataset-image {
+                position: relative;
+                top: 0;
+            }
+            .claim-popup {
+                left: -380px;
+                width: 350px;
+                max-height: 300px;
+            }
+            .event-bubble:hover .claim-popup {
+                left: -360px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .claim-popup {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90vw;
+                max-width: 400px;
+                z-index: 300;
+            }
+            .event-bubble:hover .claim-popup {
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav>
+            <div class="nav-logo">YGGDRASIL</div>
+            <div class="nav-links">
+                <a href="#overview">Overview</a>
+                <a href="#tasks">Tasks</a>
+                <a href="#dataset-construction">Dataset</a>
+                <a href="#demo">Interactive Demo</a>
+                <a href="https://github.com" target="_blank">GitHub</a>
+                <a href="javascript:void(0)" title="Coming Soon">Paper</a>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero" id="overview">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>
+                        <span>Yggdrasil</span><br>
+                        Multi-granular Event Understanding
+                    </h1>
+                    <p class="hero-subtitle">
+                        首个整合文章、原子事实、子事件和宏事件四层结构的超长上下文事件理解 Benchmark。评估 LLM 在细粒度归属、跨文档聚合、时序推理和长文本综述上的全链路能力。
+                    </p>
+                    <div class="hero-opensource">
+                        <span class="opensource-icon">🌟</span>
+                        <span class="opensource-text">我们将开源<strong>全部原始文章数据</strong>、<strong>事件构建流程代码</strong>及<strong>评测代码</strong></span>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">100</div>
+                            <div class="stat-label">宏事件</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">2000+</div>
+                            <div class="stat-label">子事件</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">10K+</div>
+                            <div class="stat-label">原子事实</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">10W+</div>
+                            <div class="stat-label">新闻文章</div>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="#demo" class="btn btn-primary">探索 Demo ↓</a>
+                        <a href="javascript:void(0)" class="btn btn-secondary" title="Coming Soon">阅读论文</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="论文介绍.png?v=2" alt="Yggdrasil Framework Overview">
+                </div>
+            </div>
+        </section>
+
+        <!-- Tasks Section -->
+        <section id="tasks">
+            <div class="section-header">
+                <div class="section-label">Evaluation Tasks</div>
+                <h2 class="section-title">四项层层递进的评测任务</h2>
+                <p class="section-desc">
+                    从细粒度归属到宏观叙事生成，全面评估 LLM 的事件理解能力
+                </p>
+            </div>
+            <div class="tasks-grid">
+                <div class="task-card">
+                    <span class="task-number">T1</span>
+                    <h3 class="task-title">Fine-grained Article-to-Event Grounding</h3>
+                    <p class="task-desc">
+                        细粒度文章-子事件归属。考察模型在复杂语境下将文章归属到具体子事件的能力，特别是区分属于同一宏事件但处于不同发展阶段的相似文章。
+                    </p>
+                </div>
+                <div class="task-card">
+                    <span class="task-number">T2</span>
+                    <h3 class="task-title">Cross-Document Event Element Aggregation</h3>
+                    <p class="task-desc">
+                        跨文档事件要素聚合。考察模型从多源异构文本中提取并聚合结构化要素的能力，重点在于信息的完整性与去重。
+                    </p>
+                </div>
+                <div class="task-card">
+                    <span class="task-number">T3</span>
+                    <h3 class="task-title">Event Evolution Sequencing</h3>
+                    <p class="task-desc">
+                        事件演化排序。通过 Mask 掉显式时间信息，考察模型仅依据事件内容的语义线索和发展脉络来恢复时序的能力。使用 PO-Acc 指标评估。
+                    </p>
+                </div>
+                <div class="task-card">
+                    <span class="task-number">T4</span>
+                    <h3 class="task-title">Hierarchical Event Summarization</h3>
+                    <p class="task-desc">
+                        层级式事件摘要。引入基于原子事实的评测指标（Yggdrasil-Eval），重点评估长文本生成中的核心事实覆盖率和幻觉问题。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dataset Construction Section -->
+        <section id="dataset-construction">
+            <div class="section-header">
+                <div class="section-label">Dataset Construction</div>
+                <h2 class="section-title">数据集构建流程</h2>
+                <p class="section-desc">
+                    从原始新闻语料到结构化事件时间线的严谨流水线
+                </p>
+            </div>
+            <div class="dataset-content">
+                <div class="dataset-text">
+                    <p class="dataset-paragraph">
+                        Yggdrasil 数据集的构建采用了一套严谨的流水线，旨在将原始、嘈杂的新闻语料库转化为结构化、分层的事件时间线。
+                        我们从2025年真实发生的社会热点中精心筛选出<strong>100个具有代表性的宏观事件</strong>，涵盖政治、经济、科技、文化等多个领域，作为数据集构建的核心观测对象。
+                        整个构建流程主要包含四个核心阶段。
+                    </p>
+                    <p class="dataset-paragraph">
+                        首先是<strong>数据准备与冗余消减</strong>。针对这100个宏观事件，基于大规模新闻聚合平台的生产日志，利用微调的 BGE 嵌入模型检索与各宏观事件语义相关的候选文章集合。
+                        鉴于新闻数据中存在大量重复报道，直接处理会导致计算开销过大及模型幻觉，因此采用 K-means 算法对文章进行聚类，将高度相似的报道归拢，实现物理降维与信息压缩。
+                    </p>
+                    <p class="dataset-paragraph">
+                        其次是关键的<strong>原子事实抽取（Atomization）</strong>。为避免长文档摘要中的事实混淆，该步骤将文章簇分解为去语境化的"原子事实"元组 
+                        <code>c = (Subject, Predicate, Object, Time, Location)</code>。在此过程中，利用小尺寸 LLM 执行严格的"上下文复制"约束，强制模型进行指代消解并将相对时间转换为绝对日期，同时过滤社论观点与未来猜测，确保信息的客观性与独立可验证性。
+                    </p>
+                    <p class="dataset-paragraph">
+                        随后进行<strong>语义去重与事件合并</strong>。由于不同文章簇可能包含同一核心事实，系统计算原子事实的向量余弦相似度，利用并查集算法合并语义等价的 Claim，并保留细节最丰富的版本作为规范化代表。基于这些唯一的原子事实，LLM 遵循"单一核心事实原则"将其合成为连贯的银标事件条目，包含标题、摘要及精确时间戳。
+                    </p>
+                    <p class="dataset-paragraph">
+                        最后，为了建立<strong>严格评测基准</strong>，专家对部分宏事件进行金标标注，通过剔除幻觉、校对时序及筛选核心事实，最终构建出高可信度的 Yggdrasil 数据集。
+                    </p>
+                </div>
+                <div class="dataset-image">
+                    <img src="pipeline.png" alt="Yggdrasil Dataset Construction Pipeline">
+                    <p class="image-caption">数据集构建流程示意图</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Section -->
+        <section class="demo-section" id="demo">
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar-nav" id="sidebarNav">
+                <div class="sidebar-header">
+                    <div class="sidebar-title">📚 事件目录</div>
+                    <div class="sidebar-subtitle">共 {{ sortedTopics.length }} 个宏事件</div>
+                </div>
+                <div class="sidebar-list">
+                    <div 
+                        v-for="topic in sortedTopics" 
+                        :key="topic.id"
+                        class="sidebar-item"
+                        :class="{ important: topic.isImportant }"
+                        @click="jumpToPlanet(topic)"
+                    >
+                        <span class="sidebar-item-icon">{{ topic.hasGame ? '🎮' : '⭐' }}</span>
+                        <span class="sidebar-item-text">{{ topic.topic }}</span>
+                    </div>
+                </div>
+            </aside>
+
+            <button class="sidebar-toggle" id="sidebarToggle" @click="toggleSidebar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+            <div class="demo-header">
+                <div class="demo-title-area">
+                    <h2>🌟 2025 年度热点事件回顾</h2>
+                    <p>探索 2025 年真实热点事件的层级化结构，体验 Task 3 时序重构挑战</p>
+                </div>
+            </div>
+            
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+                <button class="zoom-btn" @click="zoomIn" title="放大">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                        <path d="M11 8v6M8 11h6"/>
+                    </svg>
+                </button>
+                <div class="zoom-level">{{ Math.round(scale * 100) }}%</div>
+                <button class="zoom-btn" @click="zoomOut" title="缩小">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                        <path d="M8 11h6"/>
+                    </svg>
+                </button>
+                <button class="zoom-btn" @click="zoomReset" title="重置">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div 
+                id="universe-wrapper"
+                ref="universeWrapper"
+                @mousedown="startDrag"
+                @mousemove="onDrag"
+                @mouseup="stopDrag"
+                @mouseleave="stopDrag"
+                @wheel="onWheel"
+                :class="{ 'grabbing': isDragging }"
+            >
+                <div 
+                    id="universe-container" 
+                    ref="universeContainer"
+                    :style="{ transform: `translate(${panX}px, ${panY}px) scale(${scale})` }"
+                >
+                <!-- Planets (Topics) -->
+                <div 
+                    v-for="planet in planets" 
+                    :key="planet.id"
+                    class="planet-topic"
+                    :class="['planet-type-' + planet.type, { 'large': planet.isLarge, 'planet-test': planet.hasGame }]"
+                    :style="{ 
+                        left: planet.x + '%', 
+                        top: planet.y + '%', 
+                        width: planet.size + 'px', 
+                        height: planet.size + 'px',
+                        animationDelay: planet.delay + 's',
+                        animationDuration: planet.duration + 's'
+                    }"
+                    @click="openTimeline(planet)"
+                    @mouseenter="onPlanetEnter(planet, $event)"
+                    @mouseleave="onPlanetLeave(planet)"
+                >
+                    <div class="planet-scaler" v-show="hoveredPlanetId === planet.id" :style="{ transform: `scale(${1/scale})` }">
+                        <div class="planet-content" style="opacity: 1; transform: translate(-50%, 10px) scale(1);">
+                            <div class="planet-image" :style="{ backgroundImage: `url(${planet.imageUrl})` }"></div>
+                            <div class="planet-info">
+                                <div class="planet-title">{{ planet.topic }}</div>
+                                <ul class="planet-claims" v-if="planet.claims && planet.claims.length">
+                                    <li v-for="(claim, idx) in planet.claims" :key="idx">{{ claim }}</li>
+                                </ul>
+                                <div v-else class="planet-claims" style="font-style: italic; opacity: 0.6;">点击查看详情...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Background Stars -->
+                <div 
+                    v-for="bgStar in bgStars" 
+                    :key="'bg-'+bgStar.id"
+                    class="bg-star"
+                    :style="{
+                        left: bgStar.x + '%',
+                        top: bgStar.y + '%',
+                        width: bgStar.size + 'px',
+                        height: bgStar.size + 'px',
+                        opacity: bgStar.opacity
+                    }"
+                ></div>
+            </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Yggdrasil Benchmark © 2025 | <a href="https://github.com">GitHub</a> | <a href="https://arxiv.org">Paper</a></p>
+        </footer>
+
+        <!-- Timeline Fullscreen -->
+        <transition name="fade">
+            <div class="timeline-fullscreen" v-if="currentTopic">
+                <div class="timeline-bg-blur" :style="{ backgroundImage: `url(data/${currentTopic.id}/cover.png)` }"></div>
+                
+                <div class="timeline-header">
+                    <div class="timeline-title-area">
+                        <h1>{{ currentTopic.topic }}</h1>
+                        <p>共 {{ currentEvents.length }} 个子事件 · 悬浮查看详情</p>
+                    </div>
+                <div class="timeline-controls">
+                    <button class="btn btn-secondary" @click="closeTimeline">← 返回星系</button>
+                    <button class="btn btn-primary" @click="startGame" v-if="currentTopic && currentTopic.hasGame">🎮 时序重构挑战 (T3)</button>
+                </div>                </div>
+
+                <div class="timeline-scroll">
+                    <div class="timeline-track">
+                        <div 
+                            v-for="(event, index) in currentEvents" 
+                            :key="event.id" 
+                            class="timeline-node"
+                        >
+                            <div class="node-date">{{ event.date }}</div>
+                            <div class="node-title">{{ event.title }}</div>
+                            <div class="node-summary">{{ event.summary }}</div>
+                            <div class="node-claims" v-if="event.C_gold && event.C_gold.length">
+                                <div class="node-claim" v-for="(claim, cidx) in event.C_gold.slice(0, 3)" :key="cidx">
+                                    {{ claim }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+
+        <!-- Game Overlay -->
+        <transition name="fade">
+            <div class="game-overlay" v-if="showGame">
+                <div class="game-header">
+                    <h2>🧩 时序重构挑战 (Task 3)</h2>
+                    <p>拖拽卡片，仅凭语义线索还原事件发生的正确顺序</p>
+                    
+                    <div class="game-info-box">
+                        <h4>📖 Task 3: Event Evolution Sequencing</h4>
+                        <p>
+                            本任务考察模型在<strong>没有显式时间信息</strong>的情况下，仅依据事件内容的语义线索（如因果关系、逻辑发展）来恢复时序的能力。
+                            评测指标采用 <strong>Partial-Order-Aware Pairwise Accuracy (PO-Acc)</strong>：仅在具有严格先后关系的事件对上计算准确率，忽略同一时间桶内（并发）事件的相对顺序。
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="game-area" ref="gameList">
+                    <div 
+                        v-for="(card, cardIndex) in gameCards" 
+                        :key="card.id" 
+                        class="game-card"
+                        :data-id="card.id"
+                        :class="{ correct: card.status === 'correct', wrong: card.status === 'wrong' }"
+                    >
+                        <div class="game-card-number">#{{ cardIndex + 1 }}</div>
+                        <div class="game-card-title">{{ card.title }}</div>
+                        <div class="game-card-summary">{{ card.summary }}</div>
+                    </div>
+                </div>
+
+                <div class="game-controls">
+                    <button class="btn btn-secondary" @click="showGame = false">取消</button>
+                    <button class="btn btn-primary" @click="submitGame">✓ 提交验证</button>
+                </div>
+
+                <!-- Result Modal -->
+                <div class="result-modal" v-if="gameResult" style="max-width: 90vw; max-height: 90vh; overflow: auto;">
+                    <h3>挑战结果</h3>
+                    <div class="score-display">{{ (gameResult.score * 100).toFixed(1) }}%</div>
+                    <p>
+                        在 {{ gameResult.totalPairs }} 对严格时序关系中<br>
+                        你正确还原了 {{ gameResult.correctPairs }} 对
+                    </p>
+                    
+                    <!-- 正确答案展示 -->
+                    <div style="text-align: left; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <h4 style="color: var(--accent); margin-bottom: 1rem;">📋 正确时序结构（按时间桶分组）</h4>
+                        <div style="max-height: 300px; overflow-y: auto; padding-right: 0.5rem;">
+                            <div v-for="(bucket, bIdx) in gameResult.correctBuckets" :key="bIdx" 
+                                 style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 3px solid var(--accent);">
+                                <div style="font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-bottom: 0.5rem;">
+                                    ⏱️ 时间桶 {{ bIdx + 1 }}
+                                </div>
+                                <div v-for="(evt, eIdx) in bucket.events" :key="evt.id" 
+                                     style="font-size: 0.85rem; color: #d1d5db; padding: 0.25rem 0; display: flex; gap: 0.5rem;">
+                                    <span style="color: var(--accent-purple); font-weight: 600; min-width: 2rem;">{{ evt.globalIndex }}.</span>
+                                    <span>{{ evt.title }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" style="margin-top: 1.5rem;" @click="gameResult = null; showGame = false">关闭</button>
+                </div>
+            </div>
+        </transition>
+    </div>
+
+    <script>
+                const { createApp, ref, onMounted, nextTick, computed } = Vue;
+
+                createApp({
+                    setup() {
+                        const topics = ref([]);
+                        const sortedTopics = ref([]);
+                        const sidebarVisible = ref(true);
+                const currentTopic = ref(null);
+                const currentEvents = ref([]);
+                const currentBuckets = ref([]);
+                
+                // Universe
+                const planets = ref([]);
+                const bgStars = ref([]);
+                const universeContainer = ref(null);
+                
+                // Dragging & Zooming state
+                const isDragging = ref(false);
+                const startX = ref(0);
+                const startY = ref(0);
+                const panX = ref(0);
+                const panY = ref(0);
+                const scale = ref(0.5); // Initial scale to show all planets (zoomed out)
+                
+                // Game state
+                const showGame = ref(false);
+                const gameCards = ref([]);
+                const gameResult = ref(null);
+                const gameList = ref(null);
+                let sortableInstance = null;
+
+                // Dragging handlers
+                const startDrag = (e) => {
+                    isDragging.value = true;
+                    startX.value = e.clientX - panX.value;
+                    startY.value = e.clientY - panY.value;
+                };
+
+                const onDrag = (e) => {
+                    if (!isDragging.value) return;
+                    e.preventDefault();
+                    panX.value = e.clientX - startX.value;
+                    panY.value = e.clientY - startY.value;
+                };
+
+                const stopDrag = () => {
+                    isDragging.value = false;
+                };
+
+                // Zooming handler
+                const onWheel = (e) => {
+                    e.preventDefault();
+                    const zoomSensitivity = 0.001;
+                    const delta = -e.deltaY * zoomSensitivity;
+                    const newScale = Math.min(Math.max(0.1, scale.value + delta), 3); // Limit zoom level
+                    scale.value = newScale;
+                };
+
+                // Zoom button handlers
+                const zoomIn = () => {
+                    scale.value = Math.min(3, scale.value + 0.2);
+                };
+
+                const zoomOut = () => {
+                    scale.value = Math.max(0.1, scale.value - 0.2);
+                };
+
+                const zoomReset = () => {
+                    scale.value = 0.5;
+                    panX.value = 0;
+                    panY.value = 0;
+                };
+
+                // Auto-scroll state
+                let scrollAnimationId = null;
+
+                const startAutoScroll = (element) => {
+                    if (!element) return;
+                    element.scrollTop = 0;
+                    if (scrollAnimationId) cancelAnimationFrame(scrollAnimationId);
+                    
+                    const scroll = () => {
+                        // Stop if reached bottom
+                        if (Math.ceil(element.scrollTop + element.clientHeight) >= element.scrollHeight) {
+                            return;
+                        }
+                        element.scrollTop += 0.5; // Adjust speed here
+                        scrollAnimationId = requestAnimationFrame(scroll);
+                    };
+                    // Start after a small delay to let user see the top first
+                    setTimeout(() => {
+                        scrollAnimationId = requestAnimationFrame(scroll);
+                    }, 500);
+                };
+
+                const stopAutoScroll = () => {
+                    if (scrollAnimationId) {
+                        cancelAnimationFrame(scrollAnimationId);
+                        scrollAnimationId = null;
+                    }
+                };
+
+                // Hover state management
+                const hoveredPlanetId = ref(null);
+                let hoverTimeout = null;
+
+                const onPlanetEnter = async (planet, event) => {
+                    // Clear any existing timeout
+                    if (hoverTimeout) {
+                        clearTimeout(hoverTimeout);
+                        hoverTimeout = null;
+                    }
+                    
+                    // Preload data immediately
+                    preloadPlanetData(planet);
+                    
+                    // Store reference for later use
+                    const targetElement = event.currentTarget;
+                    
+                    // Delay 500ms before showing hover card
+                    hoverTimeout = setTimeout(() => {
+                        hoveredPlanetId.value = planet.id;
+                        
+                        nextTick(() => {
+                            // Find the claims list within the hovered element
+                            const content = targetElement.querySelector('.planet-claims');
+                            if (content) {
+                                // Add small delay to ensure DOM is fully rendered
+                                setTimeout(() => {
+                                    startAutoScroll(content);
+                                }, 100);
+                            }
+                        });
+                    }, 500);
+                };
+
+                const onPlanetLeave = (planet) => {
+                    // Clear timeout if hover card hasn't shown yet
+                    if (hoverTimeout) {
+                        clearTimeout(hoverTimeout);
+                        hoverTimeout = null;
+                    }
+                    hoveredPlanetId.value = null;
+                    stopAutoScroll();
+                };
+
+                // Preload planet data on hover
+                const preloadPlanetData = async (planet) => {
+                    if (planet.claimsLoaded) return;
+                    
+                    try {
+                        const res = await fetch(`data/${planet.file}`);
+                        const data = await res.json();
+                        
+                        // Extract claims (C_gold or summary)
+                        let claims = [];
+                        if (data.events && data.events.length > 0) {
+                            // Try to find events with C_gold
+                            const eventsWithClaims = data.events.filter(e => e.C_gold && e.C_gold.length > 0);
+                            
+                            // Collect up to 100 claims
+                            let count = 0;
+                            const maxClaims = 100;
+                            
+                            // Strategy: Iterate through events and collect claims until limit
+                            for (const event of (eventsWithClaims.length > 0 ? eventsWithClaims : data.events)) {
+                                if (count >= maxClaims) break;
+                                
+                                if (event.C_gold && event.C_gold.length > 0) {
+                                    for (const claim of event.C_gold) {
+                                        if (count >= maxClaims) break;
+                                        claims.push(claim);
+                                        count++;
+                                    }
+                                } else if (event.summary) {
+                                    claims.push(event.summary);
+                                    count++;
+                                }
+                            }
+                        }
+                        
+                        if (claims.length > 0) {
+                            claims.push('...'); // Add ellipsis at the end
+                        }
+
+                        planet.claims = claims;
+                        planet.claimsLoaded = true;
+                    } catch (e) {
+                        console.error("Failed to preload planet data", e);
+                    }
+                };
+
+                // Generate Planets from Topics
+                const generatePlanets = (topicList) => {
+                    const planetList = [];
+                    
+                    // Fibonacci Spiral Distribution (Vogel's method)
+                    // Ensures uniform distribution in a circle
+                    const count = topicList.length;
+                    const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+                    const centerX = 100; // Center of 200% container
+                    const centerY = 100;
+                    const maxRadius = 85; // Leave some margin (container is 0-200)
+                    
+                    // Shuffle topics to randomize positions
+                    const shuffledTopics = [...topicList].sort(() => Math.random() - 0.5);
+                    
+                    shuffledTopics.forEach((topic, index) => {
+                        const i = index;
+                        const theta = i * goldenAngle;
+                        const r = Math.sqrt(i + 1) / Math.sqrt(count) * maxRadius;
+                        
+                        const x = centerX + r * Math.cos(theta);
+                        const y = centerY + r * Math.sin(theta);
+                        
+                        // Random properties
+                        const type = Math.floor(Math.random() * 6) + 1;
+                        const isLarge = Math.random() > 0.8 || topic.hasGame; // 20% chance or has game
+                        const size = isLarge ? (80 + Math.random() * 40) : (30 + Math.random() * 30);
+                        
+                        // Animation props
+                        const delay = Math.random() * -20;
+                        const duration = 10 + Math.random() * 20;
+                        
+                        // Image URL: Use local cover image
+                        const folder = topic.file.split('/')[0];
+                        const imageUrl = `data/${folder}/cover.png`;
+
+                        planetList.push({
+                            ...topic,
+                            x, y, size, type, isLarge, delay, duration,
+                            imageUrl,
+                            claims: [], // Will be loaded on hover
+                            claimsLoaded: false
+                        });
+                    });
+                    
+                    planets.value = planetList;
+
+                    // Generate background stars
+                    const bgList = [];
+                    for (let i = 0; i < 300; i++) {
+                        bgList.push({
+                            id: i,
+                            x: Math.random() * 200,
+                            y: Math.random() * 200,
+                            size: Math.random() * 2 + 1,
+                            opacity: Math.random() * 0.6 + 0.1
+                        });
+                    }
+                    bgStars.value = bgList;
+                };
+
+                // Sort topics by importance
+                const sortTopicsByImportance = (topicList) => {
+                    // Define importance weights based on file size (from list_dir results)
+                    const importanceMap = {
+                        'a_01': 27040, 'a_38': 21870, 'a_26': 16270, 'a_12': 13330,
+                        'a_09': 10170, 'a_05': 7690, 'a_22': 6930, 'a_06': 6790,
+                        'a_13': 6660, 'a_04': 6680, 'a_16': 5690, 'a_25': 4060,
+                        'a_29': 4020, 'a_11': 3590, 'a_18': 2930, 'a_15': 2770,
+                        'a_41': 2520, 'a_21': 2440, 'a_07': 2230, 'a_14': 2130,
+                        'a_24': 2000, 'a_36': 1780, 'a_17': 1790, 'a_27': 1260,
+                        'a_20': 1250, 'a_39': 1010, 'a_02': 929, 'a_34': 914,
+                        'a_35': 865, 'a_33': 818, 'a_10': 984, 'a_19': 979,
+                        'a_23': 973, 'a_08': 810, 'a_32': 712, 'a_42': 517,
+                        'a_30': 474, 'a_31': 318, 'a_03': 1280
+                    };
+                    
+                    const sorted = [...topicList].map(t => ({
+                        ...t,
+                        importance: importanceMap[t.id] || 0,
+                        isImportant: (importanceMap[t.id] || 0) > 5000
+                    })).sort((a, b) => {
+                        // Test topics first
+                        if (a.hasGame && !b.hasGame) return -1;
+                        if (!a.hasGame && b.hasGame) return 1;
+                        // Then by importance
+                        return b.importance - a.importance;
+                    });
+                    
+                    return sorted;
+                };
+
+                // Jump to planet
+                const jumpToPlanet = (topic) => {
+                    const planet = planets.value.find(p => p.id === topic.id);
+                    if (planet) {
+                        openTimeline(planet);
+                    }
+                };
+
+                // Toggle sidebar
+                const toggleSidebar = () => {
+                    const sidebar = document.getElementById('sidebarNav');
+                    sidebar.classList.toggle('show');
+                };
+
+                onMounted(async () => {
+                    try {
+                        // 添加时间戳防止缓存
+                        const res = await fetch(`data/index.json?t=${Date.now()}`);
+                        const indexData = await res.json();
+                        
+                        // 确保正确提取topics数组
+                        let topicsList = [];
+                        if (Array.isArray(indexData.topics)) {
+                            topicsList = indexData.topics;
+                        } else if (Array.isArray(indexData)) {
+                            topicsList = indexData;
+                        } else {
+                            console.error("Invalid index.json format:", indexData);
+                            throw new Error("Invalid data format");
+                        }
+                        
+                        console.log(`✅ 成功加载 ${topicsList.length} 个宏事件`);
+                        topics.value = topicsList;
+                        sortedTopics.value = sortTopicsByImportance(topicsList);
+                        generatePlanets(topicsList);
+                    } catch (e) {
+                        console.error("Failed to load index:", e);
+                        // Fallback data if fetch fails
+                        const fallbackTopics = Array.from({length: 50}, (_, i) => ({
+                            id: `mock_${i}`,
+                            topic: `Mock Topic ${i}`,
+                            file: 'mock.json',
+                            hasGame: Math.random() > 0.8
+                        }));
+                        sortedTopics.value = sortTopicsByImportance(fallbackTopics);
+                        generatePlanets(fallbackTopics);
+                    }
+                });
+
+                // Open timeline
+                const openTimeline = async (topic) => {
+                    try {
+                        const res = await fetch(`data/${topic.file}`);
+                        const data = await res.json();
+                        currentTopic.value = topic;
+                        currentEvents.value = data.events;
+                        currentBuckets.value = data.ordered_buckets || [];
+                    } catch (e) {
+                        console.error("Failed to load events:", e);
+                        // Fallback for demo
+                        currentTopic.value = topic;
+                        currentEvents.value = [];
+                        alert("暂无该事件的详细数据");
+                    }
+                };
+
+                const closeTimeline = () => {
+                    currentTopic.value = null;
+                };
+
+                // Start game
+                const startGame = () => {
+                    const cards = currentEvents.value.map(e => ({
+                        id: e.id,
+                        title: e.title,
+                        summary: e.summary,
+                        status: 'neutral'
+                    }));
+                    
+                    // Shuffle
+                    for (let i = cards.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [cards[i], cards[j]] = [cards[j], cards[i]];
+                    }
+                    
+                    gameCards.value = cards;
+                    showGame.value = true;
+                    
+                    nextTick(() => {
+                        if (sortableInstance) sortableInstance.destroy();
+                        sortableInstance = new Sortable(gameList.value, {
+                            animation: 150,
+                            ghostClass: 'sortable-ghost'
+                        });
+                    });
+                };
+
+                // Submit game
+                const submitGame = () => {
+                    const currentOrderIds = Array.from(gameList.value.children).map(el => parseInt(el.dataset.id));
+                    
+                    // Build EventID -> BucketIndex map
+                    const eventBucketMap = new Map();
+                    currentBuckets.value.forEach((bucket, idx) => {
+                        bucket.event_ids.forEach(eid => eventBucketMap.set(eid, idx));
+                    });
+
+                    let correctPairs = 0;
+                    let totalPairs = 0;
+
+                    // Calculate PO-Acc
+                    for (let i = 0; i < currentOrderIds.length; i++) {
+                        for (let j = i + 1; j < currentOrderIds.length; j++) {
+                            const u = currentOrderIds[i];
+                            const v = currentOrderIds[j];
+                            
+                            const bucketU = eventBucketMap.get(u);
+                            const bucketV = eventBucketMap.get(v);
+
+                            if (bucketU !== undefined && bucketV !== undefined && bucketU !== bucketV) {
+                                totalPairs++;
+                                if (bucketU < bucketV) {
+                                    correctPairs++;
+                                }
+                            }
+                        }
+                    }
+
+                    const score = totalPairs === 0 ? 1 : correctPairs / totalPairs;
+                    
+                    // Build correct answer structure with buckets for display
+                    const correctBuckets = [];
+                    let globalIndex = 1;
+                    currentBuckets.value.forEach((bucket, bIdx) => {
+                        const bucketEvents = [];
+                        bucket.event_ids.forEach(eid => {
+                            const evt = currentEvents.value.find(e => e.id === eid);
+                            if (evt) {
+                                bucketEvents.push({
+                                    id: eid,
+                                    title: evt.title,
+                                    globalIndex: globalIndex++
+                                });
+                            }
+                        });
+                        if (bucketEvents.length > 0) {
+                            correctBuckets.push({
+                                bucketIndex: bIdx + 1,
+                                events: bucketEvents
+                            });
+                        }
+                    });
+                    
+                    gameResult.value = { score, correctPairs, totalPairs, correctBuckets };
+                };
+
+                return {
+                    topics,
+                    sortedTopics,
+                    currentTopic,
+                    currentEvents,
+                    openTimeline,
+                    closeTimeline,
+                    startGame,
+                    showGame,
+                    gameCards,
+                    gameList,
+                    submitGame,
+                    gameResult,
+                    // Universe
+                    planets,
+                    bgStars,
+                    universeContainer,
+                    hoveredPlanetId,
+                    // Dragging
+                    startDrag,
+                    onDrag,
+                    stopDrag,
+                    isDragging,
+                    panX,
+                    panY,
+                    preloadPlanetData,
+                    onWheel,
+                    scale,
+                    zoomIn,
+                    zoomOut,
+                    zoomReset,
+                    onPlanetEnter,
+                    onPlanetLeave,
+                    // Sidebar
+                    jumpToPlanet,
+                    toggleSidebar,
+                    sidebarVisible
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

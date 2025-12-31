@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yggdrasil 宣传图生成器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background: #1a1a2e;
+            color: white;
+            padding: 2rem;
+        }
+
+        .controls {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .controls button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .controls button.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .controls button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .controls button.secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .controls select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* ========== 宣传图模板样式 ========== */
+        
+        /* 通用容器 */
+        .promo-canvas {
+            width: 800px;
+            background: #0a0a0f;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        /* 模板1: 数据驱动型 */
+        .template-data {
+            height: 1400px;
+            background: linear-gradient(180deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            padding: 4rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .template-data .header {
+            text-align: center;
+        }
+
+        .template-data .logo {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .template-data .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+        }
+
+        .template-data .subtitle {
+            font-size: 1.3rem;
+            color: #a1a1aa;
+            line-height: 1.6;
+        }
+
+        .template-data .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .template-data .stat-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .template-data .stat-value {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .template-data .stat-label {
+            font-size: 1.3rem;
+            color: #d1d5db;
+            font-weight: 600;
+        }
+
+        .template-data .features {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .template-data .feature-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .template-data .feature-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .template-data .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.1rem;
+            color: #e5e7eb;
+        }
+
+        .template-data .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .template-data .footer {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .template-data .cta {
+            font-size: 1.2rem;
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        /* 模板2: 视觉冲击型 */
+        .template-visual {
+            height: 1600px;
+            background: #0a0a0f;
+            position: relative;
+        }
+
+        .template-visual .bg-gradient {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(167, 139, 250, 0.3) 0%, transparent 50%);
+        }
+
+        .template-visual .content {
+            position: relative;
+            z-index: 10;
+            padding: 4rem 3rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .template-visual .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .template-visual .hero-badge {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .template-visual .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .template-visual .hero-title .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .template-visual .hero-desc {
+            font-size: 1.5rem;
+            color: #a1a1aa;
+            max-width: 600px;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+
+        .template-visual .metrics {
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+        }
+
+        .template-visual .metric {
+            text-align: center;
+        }
+
+        .template-visual .metric-value {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .template-visual .metric-label {
+            font-size: 1.2rem;
+            color: #d1d5db;
+            margin-top: 0.5rem;
+        }
+
+        .template-visual .tasks-showcase {
+            background: rgba(255,255,255,0.03);
+            border-radius: 30px;
+            padding: 3rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .template-visual .tasks-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .template-visual .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .template-visual .task-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border-left: 4px solid;
+        }
+
+        .template-visual .task-box:nth-child(1) { border-color: #60a5fa; }
+        .template-visual .task-box:nth-child(2) { border-color: #a78bfa; }
+        .template-visual .task-box:nth-child(3) { border-color: #4ade80; }
+        .template-visual .task-box:nth-child(4) { border-color: #fb923c; }
+
+        .template-visual .task-number {
+            font-size: 0.9rem;
+            font-weight: 700;
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .template-visual .task-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        /* 模板3: 时间轴故事型 */
+        .template-timeline {
+            height: 2000px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 4rem 3rem;
+        }
+
+        .template-timeline .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .template-timeline .main-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #4ecdc4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .template-timeline .main-subtitle {
+            font-size: 1.5rem;
+            color: #a1a1aa;
+        }
+
+        .template-timeline .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .template-timeline .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            transform: translateX(-50%);
+        }
+
+        .template-timeline .timeline-item {
+            position: relative;
+            margin-bottom: 4rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .template-timeline .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .template-timeline .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .template-timeline .timeline-content {
+            width: 45%;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .template-timeline .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            border: 5px solid #1a1a2e;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .template-timeline .timeline-label {
+            font-size: 1rem;
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .template-timeline .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .template-timeline .timeline-desc {
+            font-size: 1rem;
+            color: #d1d5db;
+            line-height: 1.6;
+        }
+
+        .template-timeline .footer-cta {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 3rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 30px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .template-timeline .footer-cta h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .template-timeline .footer-cta p {
+            font-size: 1.2rem;
+            color: #a1a1aa;
+        }
+
+        /* 模板4: 极简科技风 */
+        .template-minimal {
+            height: 1200px;
+            background: #000;
+            padding: 4rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .template-minimal .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(102, 126, 234, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 126, 234, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+        }
+
+        .template-minimal .content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .template-minimal .logo-large {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+        }
+
+        .template-minimal .tagline {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #fff;
+            margin-bottom: 3rem;
+            line-height: 1.5;
+        }
+
+        .template-minimal .tagline strong {
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .template-minimal .stats-inline {
+            display: flex;
+            gap: 4rem;
+            justify-content: center;
+            margin: 4rem 0;
+        }
+
+        .template-minimal .stat-inline {
+            font-size: 1.5rem;
+            color: #a1a1aa;
+        }
+
+        .template-minimal .stat-inline strong {
+            font-size: 2.5rem;
+            color: #fff;
+            font-weight: 900;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .template-minimal .divider {
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            margin: 3rem auto;
+        }
+
+        .template-minimal .bottom-text {
+            font-size: 1.3rem;
+            color: #667eea;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <select id="templateSelect">
+            <option value="data">模板1: 数据驱动型</option>
+            <option value="visual">模板2: 视觉冲击型</option>
+            <option value="timeline">模板3: 时间轴故事型</option>
+            <option value="minimal">模板4: 极简科技风</option>
+        </select>
+        <button class="primary" onclick="downloadImage()">📥 下载图片</button>
+        <button class="secondary" onclick="switchTemplate()">🔄 切换模板</button>
+    </div>
+
+    <div class="preview-container">
+        <div id="canvas">
+            <!-- 模板内容将通过JS动态加载 -->
+        </div>
+    </div>
+
+    <script>
+        const templates = {
+            data: `
+                <div class="promo-canvas template-data">
+                    <div class="header">
+                        <div class="logo">YGGDRASIL</div>
+                        <h1 class="title">首个多粒度事件理解<br>超长上下文 Benchmark</h1>
+                        <p class="subtitle">整合文章、原子事实、子事件和宏事件四层结构<br>全面评估 LLM 的事件理解能力</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">100</div>
+                            <div class="stat-label">宏事件</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">2000+</div>
+                            <div class="stat-label">子事件</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">10K+</div>
+                            <div class="stat-label">原子事实</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">10W+</div>
+                            <div class="stat-label">新闻文章</div>
+                        </div>
+                    </div>
+
+                    <div class="features">
+                        <h3 class="feature-title">🎯 四项核心评测任务</h3>
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <div class="feature-icon">1</div>
+                                <span>细粒度文章-子事件归属</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">2</div>
+                                <span>跨文档事件要素聚合</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">3</div>
+                                <span>事件演化时序排序</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">4</div>
+                                <span>层级式事件摘要生成</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer">
+                        <p class="cta">🔗 GitHub · Paper · Interactive Demo</p>
+                    </div>
+                </div>
+            `,
+            
+            visual: `
+                <div class="promo-canvas template-visual">
+                    <div class="bg-gradient"></div>
+                    <div class="content">
+                        <div class="hero">
+                            <div class="hero-badge">🌳 New Benchmark 2025</div>
+                            <h1 class="hero-title">
+                                <span class="highlight">Yggdrasil</span><br>
+                                多粒度事件理解
+                            </h1>
+                            <p class="hero-desc">
+                                从细粒度归属到宏观叙事生成<br>
+                                全面评估 LLM 在超长上下文中的事件理解能力
+                            </p>
+                            <div class="metrics">
+                                <div class="metric">
+                                    <div class="metric-value">100</div>
+                                    <div class="metric-label">宏事件</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-value">2000+</div>
+                                    <div class="metric-label">子事件</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-value">10W+</div>
+                                    <div class="metric-label">新闻文章</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tasks-showcase">
+                            <h3 class="tasks-title">四项层层递进的评测任务</h3>
+                            <div class="tasks-grid">
+                                <div class="task-box">
+                                    <div class="task-number">TASK 1</div>
+                                    <div class="task-name">Fine-grained Article-to-Event Grounding</div>
+                                </div>
+                                <div class="task-box">
+                                    <div class="task-number">TASK 2</div>
+                                    <div class="task-name">Cross-Document Event Element Aggregation</div>
+                                </div>
+                                <div class="task-box">
+                                    <div class="task-number">TASK 3</div>
+                                    <div class="task-name">Event Evolution Sequencing</div>
+                                </div>
+                                <div class="task-box">
+                                    <div class="task-number">TASK 4</div>
+                                    <div class="task-name">Hierarchical Event Summarization</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            
+            timeline: `
+                <div class="promo-canvas template-timeline">
+                    <div class="header">
+                        <h1 class="main-title">🌟 Yggdrasil 2025</h1>
+                        <p class="main-subtitle">多粒度事件理解的完整解决方案</p>
+                    </div>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-label">LAYER 1</div>
+                                <h3 class="timeline-title">新闻文章层</h3>
+                                <p class="timeline-desc">10W+ 真实新闻文章，覆盖 2025 年度热点事件</p>
+                            </div>
+                            <div class="timeline-dot"></div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-label">LAYER 2</div>
+                                <h3 class="timeline-title">原子事实层</h3>
+                                <p class="timeline-desc">10K+ 精细标注的原子事实，支持细粒度评测</p>
+                            </div>
+                            <div class="timeline-dot"></div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-label">LAYER 3</div>
+                                <h3 class="timeline-title">子事件层</h3>
+                                <p class="timeline-desc">2000+ 子事件，记录事件发展的关键节点</p>
+                            </div>
+                            <div class="timeline-dot"></div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-label">LAYER 4</div>
+                                <h3 class="timeline-title">宏事件层</h3>
+                                <p class="timeline-desc">100 个宏事件，构建完整的事件知识图谱</p>
+                            </div>
+                            <div class="timeline-dot"></div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-label">EVALUATION</div>
+                                <h3 class="timeline-title">四项评测任务</h3>
+                                <p class="timeline-desc">从归属、聚合、排序到摘要，全链路能力评估</p>
+                            </div>
+                            <div class="timeline-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="footer-cta">
+                        <h3>🚀 探索 Interactive Demo</h3>
+                        <p>体验真实事件的层级化结构 · 挑战时序重构任务</p>
+                    </div>
+                </div>
+            `,
+            
+            minimal: `
+                <div class="promo-canvas template-minimal">
+                    <div class="grid-bg"></div>
+                    <div class="content">
+                        <div class="logo-large">YGGDRASIL</div>
+                        <p class="tagline">
+                            The <strong>First</strong> Multi-granular<br>
+                            Event Understanding Benchmark
+                        </p>
+
+                        <div class="stats-inline">
+                            <div class="stat-inline">
+                                <strong>100</strong>
+                                Macro Events
+                            </div>
+                            <div class="stat-inline">
+                                <strong>2000+</strong>
+                                Sub Events
+                            </div>
+                            <div class="stat-inline">
+                                <strong>10W+</strong>
+                                Articles
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <p class="bottom-text">Four Evaluation Tasks · Long Context · 2025</p>
+                    </div>
+                </div>
+            `
+        };
+
+        // 初始化加载第一个模板
+        document.getElementById('canvas').innerHTML = templates.data;
+
+        // 切换模板
+        function switchTemplate() {
+            const select = document.getElementById('templateSelect');
+            const template = select.value;
+            document.getElementById('canvas').innerHTML = templates[template];
+        }
+
+        // 监听下拉框变化
+        document.getElementById('templateSelect').addEventListener('change', switchTemplate);
+
+        // 下载图片
+        async function downloadImage() {
+            const canvas = document.getElementById('canvas');
+            const select = document.getElementById('templateSelect');
+            const templateName = select.options[select.selectedIndex].text;
+            
+            try {
+                const canvasElement = await html2canvas(canvas, {
+                    scale: 2,
+                    backgroundColor: null,
+                    logging: false,
+                    useCORS: true
+                });
+                
+                const link = document.createElement('a');
+                link.download = `Yggdrasil_Promo_${templateName}_${Date.now()}.png`;
+                link.href = canvasElement.toDataURL('image/png');
+                link.click();
+                
+                alert('✅ 图片已生成并下载！');
+            } catch (error) {
+                console.error('生成图片失败:', error);
+                alert('❌ 生成图片失败，请检查控制台');
+            }
+        }
+    </script>
+</body>
+</html>
